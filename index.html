@@ -26,7 +26,6 @@
 
     <script>
         const API_URL = 'https://robust-unequaled-flute.glitch.me';  // Replace with your Glitch project URL
-        const ADMIN_PASSWORD = "admin";  // Set your admin password here
 
         async function fetchCurrentOperator() {
             try {
@@ -70,13 +69,25 @@
             }
         }
 
-        function authenticate() {
+        async function authenticate() {
             const passwordInput = document.getElementById("admin-password").value;
-            if (passwordInput === ADMIN_PASSWORD) {
-                document.getElementById("admin-section").style.display = "block";
-                fetchOperators();
-            } else {
-                alert("Incorrect password!");
+            try {
+                const response = await fetch(`${API_URL}/authenticate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password: passwordInput })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById("admin-section").style.display = "block";
+                    fetchOperators();
+                } else {
+                    alert("Incorrect password!");
+                }
+            } catch (error) {
+                console.error("Error during authentication:", error);
+                alert("Authentication failed");
             }
         }
 
