@@ -6,8 +6,7 @@
     <title>Drone Operator Info</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #operator-info { margin-top: 20px; }
-        #admin-section { display: none; margin-top: 20px; }
+        #operator-info, #admin-section { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -16,33 +15,28 @@
         <p>Loading...</p>
     </div>
 
-    <!-- Admin Section (Hidden by Default) -->
-    <div id="admin-section">
-        <label for="operator-select">Choose Operator:</label>
-        <select id="operator-select">
-            <option value="John Doe|johndoe@example.com|Lead Operator">John Doe</option>
-            <option value="Jane Smith|janesmith@example.com|Supervisor">Jane Smith</option>
-            <option value="Alex Brown|alexbrown@example.com|Technician">Alex Brown</option>
-        </select>
-        <button onclick="updateOperator()">Set as Current Operator</button>
+    <div id="admin-section" style="display: none;">
+        <h2>Set Current Operator</h2>
+        <select id="operator-select"></select>
+        <button onclick="updateCurrentOperator()">Set as Current Operator</button>
     </div>
 
-    <!-- Show Admin Section if Password is Correct -->
     <input type="password" id="admin-password" placeholder="Admin Password">
     <button onclick="authenticate()">Login</button>
 
     <script>
-        const API_URL = 'https://robust-unequaled-flute.glitch.me/operator'; // Replace with your backend URL
+        const API_URL = 'https://your-project.glitch.me';  // Replace with your Glitch project URL
 
-        // Function to fetch and display the current operator
-        async function fetchOperatorData() {
+        async function fetchCurrentOperator() {
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(`${API_URL}/current-operator`);
                 const data = await response.json();
                 document.getElementById("operator-info").innerHTML = `
+                    <p><strong>eID:</strong> ${data.eID}</p>
                     <p><strong>Name:</strong> ${data.name}</p>
                     <p><strong>Contact:</strong> ${data.contact}</p>
-                    <p><strong>Role:</strong> ${data.role}</p>
+                    <p><strong>Country:</strong> ${data.registrationCountry}</p>
+                    <p><strong>Drone ID:</strong> ${data.droneIdentification}</p>
                 `;
             } catch (error) {
                 document.getElementById("operator-info").innerHTML = "<p>Error loading operator data.</p>";
@@ -50,35 +44,42 @@
             }
         }
 
-        // Function to update the current operator
-        async function updateOperator() {
-            const [name, contact, role] = document.getElementById("operator-select").value.split("|");
-            const newOperator = { name, contact, role };
-
+        async function fetchOperators() {
             try {
-                await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(newOperator)
-                });
-                fetchOperatorData(); // Refresh display
+                const response = await fetch(`${API_URL}/operators`);
+                const operators = await response.json();
+                const select = document.getElementById("operator-select");
+                select.innerHTML = operators.map(op => `<option value="${op.eID}">${op.name}</option>`).join('');
             } catch (error) {
-                console.error("Error updating operator data:", error);
+                console.error("Error fetching operators:", error);
             }
         }
 
-        // Simple authentication (example password check)
+        async function updateCurrentOperator() {
+            const eID = document.getElementById("operator-select").value;
+            try {
+                await fetch(`${API_URL}/current-operator`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ eID })
+                });
+                fetchCurrentOperator();
+            } catch (error) {
+                console.error("Error updating current operator:", error);
+            }
+        }
+
         function authenticate() {
             const password = document.getElementById("admin-password").value;
-            if (password === "admin") {  // Replace with a secure password
+            if (password === "your_password") {  // Replace with a secure password
                 document.getElementById("admin-section").style.display = "block";
+                fetchOperators();
             } else {
                 alert("Incorrect password!");
             }
         }
 
-        // Fetch operator data on page load
-        fetchOperatorData();
+        fetchCurrentOperator();  // Load current operator on page load
     </script>
 </body>
 </html>
