@@ -25,7 +25,7 @@
     <button onclick="authenticate()">Login</button>
 
     <script>
-        const API_URL = 'https://your-project.glitch.me';  // Replace with your Glitch project URL
+        const API_URL = 'https://robust-unequaled-flute.glitch.me/operator';  // Replace with your Glitch project URL
 
         async function fetchCurrentOperator() {
             try {
@@ -71,7 +71,7 @@
 
         function authenticate() {
             const password = document.getElementById("admin-password").value;
-            if (password === "your_password") {  // Replace with a secure password
+            if (password === "admin") {  // Replace with a secure password
                 document.getElementById("admin-section").style.display = "block";
                 fetchOperators();
             } else {
