@@ -25,7 +25,8 @@
     <button onclick="authenticate()">Login</button>
 
     <script>
-        const API_URL = 'https://robust-unequaled-flute.glitch.me/operators';  // Replace with your Glitch project URL
+        const API_URL = 'https://robust-unequaled-flute.glitch.me';  // Replace with your Glitch project URL
+        const ADMIN_PASSWORD = "admin";  // Set your admin password here
 
         async function fetchCurrentOperator() {
             try {
@@ -70,8 +71,8 @@
         }
 
         function authenticate() {
-            const password = document.getElementById("admin-password").value;
-            if (password === "admin") {  // Replace with a secure password
+            const passwordInput = document.getElementById("admin-password").value;
+            if (passwordInput === ADMIN_PASSWORD) {
                 document.getElementById("admin-section").style.display = "block";
                 fetchOperators();
             } else {
