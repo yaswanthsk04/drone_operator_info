@@ -3,22 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Current Drone Operator</title>
+    <title>Drone Operator Info</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
         #operator-info { margin-top: 20px; }
+        #admin-section { display: none; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <h1>Active Drone Operator</h1>
+    <h1>Current Drone Operator</h1>
     <div id="operator-info">
         <p>Loading...</p>
     </div>
 
+    <!-- Admin Section (Hidden by Default) -->
+    <div id="admin-section">
+        <label for="operator-select">Choose Operator:</label>
+        <select id="operator-select">
+            <option value="John Doe|johndoe@example.com|Lead Operator">John Doe</option>
+            <option value="Jane Smith|janesmith@example.com|Supervisor">Jane Smith</option>
+            <option value="Alex Brown|alexbrown@example.com|Technician">Alex Brown</option>
+        </select>
+        <button onclick="updateOperator()">Set as Current Operator</button>
+    </div>
+
+    <!-- Show Admin Section if Password is Correct -->
+    <input type="password" id="admin-password" placeholder="Admin Password">
+    <button onclick="authenticate()">Login</button>
+
     <script>
+        const API_URL = 'https://robust-unequaled-flute.glitch.me/operator'; // Replace with your backend URL
+
+        // Function to fetch and display the current operator
         async function fetchOperatorData() {
             try {
-                const response = await fetch('data.json');
+                const response = await fetch(API_URL);
                 const data = await response.json();
                 document.getElementById("operator-info").innerHTML = `
                     <p><strong>Name:</strong> ${data.name}</p>
@@ -31,6 +50,34 @@
             }
         }
 
+        // Function to update the current operator
+        async function updateOperator() {
+            const [name, contact, role] = document.getElementById("operator-select").value.split("|");
+            const newOperator = { name, contact, role };
+
+            try {
+                await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newOperator)
+                });
+                fetchOperatorData(); // Refresh display
+            } catch (error) {
+                console.error("Error updating operator data:", error);
+            }
+        }
+
+        // Simple authentication (example password check)
+        function authenticate() {
+            const password = document.getElementById("admin-password").value;
+            if (password === "admin") {  // Replace with a secure password
+                document.getElementById("admin-section").style.display = "block";
+            } else {
+                alert("Incorrect password!");
+            }
+        }
+
+        // Fetch operator data on page load
         fetchOperatorData();
     </script>
 </body>
