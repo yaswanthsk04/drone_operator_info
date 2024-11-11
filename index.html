@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Drone Operator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #operator-info { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Active Drone Operator</h1>
+    <div id="operator-info">
+        <p>Loading...</p>
+    </div>
+
+    <script>
+        async function fetchOperatorData() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                document.getElementById("operator-info").innerHTML = `
+                    <p><strong>Name:</strong> ${data.name}</p>
+                    <p><strong>Contact:</strong> ${data.contact}</p>
+                    <p><strong>Role:</strong> ${data.role}</p>
+                `;
+            } catch (error) {
+                document.getElementById("operator-info").innerHTML = "<p>Error loading operator data.</p>";
+                console.error("Error fetching operator data:", error);
+            }
+        }
+
+        fetchOperatorData();
+    </script>
+</body>
+</html>
