@@ -3,146 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drone Operator Dashboard</title>
+    <title>Drone Operator Info</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 600px;
-        }
-        h1 {
-            color: #333;
-        }
-        .info, .admin-section {
-            background: #e9e9e9;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #0084ff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        input[type="password"], select {
-            padding: 8px;
-            margin: 5px 0;
-            width: calc(100% - 22px);
-            display: block;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #operator-info, #admin-section { margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Current Drone Operator</h1>
-        <div class="info" id="operator-info">
-            <p>Loading...</p>
-        </div>
-
-        <div class="admin-section" style="display: none;">
-            <h2>Set Current Operator</h2>
-            <select id="operator-select"></select>
-            <button onclick="updateCurrentOperator()">Set as Current Operator</button>
-        </div>
-
-        <input type="password" id="admin-password" placeholder="Admin Password">
-        <button onclick="authenticate()">Login</button>
+    <h1>Current Drone Operator</h1>
+    <div id="operator-info">
+        <p>Loading...</p>
     </div>
+
+    <div id="admin-section" style="display: none;">
+        <h2>Set Current Operator</h2>
+        <select id="operator-select"></select>
+        <button onclick="updateCurrentOperator()">Set as Current Operator</button>
+    </div>
+
+    <input type="password" id="admin-password" placeholder="Admin Password">
+    <button onclick="authenticate()">Login</button>
 
     <script>
         const API_URL = 'https://robust-unequaled-flute.glitch.me';  // Replace with your Glitch project URL
 
-async function fetchCurrentOperator() {
-    try {
-        const response = await fetch(`${API_URL}/current-operator`);
-        const data = await response.json();
-        document.getElementById("operator-info").innerHTML = `
-            <p><strong>UAS Operator Number (e-ID):</strong> ${data.eID}</p>
-            <p><strong>Drone Model:</strong> ${data.droneIdentification}</p>
-        `;
-    } catch (error) {
-        document.getElementById("operator-info").innerHTML = "<p>Error loading operator data.</p>";
-        console.error("Error fetching operator data:", error);
-    }
-}
-
-async function fetchOperators() {
-    try {
-        const response = await fetch(`${API_URL}/operators`);
-        const operators = await response.json();
-        const select = document.getElementById("operator-select");
-        select.innerHTML = operators.map(op => `<option value="${op.eID}">${op.name}</option>`).join('');
-    } catch (error) {
-        console.error("Error fetching operators:", error);
-    }
-}
-
-async function updateCurrentOperator() {
-    const eID = document.getElementById("operator-select").value;
-    try {
-        await fetch(`${API_URL}/current-operator`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ eID })
-        });
-        fetchCurrentOperator();
-    } catch (error) {
-        console.error("Error updating current operator:", error);
-    }
-}
-
-function authenticate() {
-    const passwordInput = document.getElementById('admin-password').value;
-    fetch(`${API_URL}/authenticate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: passwordInput })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const adminSection = document.getElementById('admin-section');
-            if (adminSection) {
-                adminSection.style.display = 'block';
-                fetchOperators();
-            } else {
-                console.error('Admin section element not found.');
+        async function fetchCurrentOperator() {
+            try {
+                const response = await fetch(${API_URL}/current-operator);
+                const data = await response.json();
+                document.getElementById("operator-info").innerHTML = 
+                    <p><strong>UAS Operator Number (e-ID):</strong> ${data.eID}</p>
+                    <p><strong>Drone Model:</strong> ${data.droneIdentification}</p>
+                ;
+            } catch (error) {
+                document.getElementById("operator-info").innerHTML = "<p>Error loading operator data.</p>";
+                console.error("Error fetching operator data:", error);
             }
-        } else {
-            alert("Incorrect password!");
         }
-    })
-    .catch(error => {
-        console.error("Error during authentication:", error);
-        alert("Authentication failed: " + error.message);
-    });
-}
 
+        async function fetchOperators() {
+            try {
+                const response = await fetch(${API_URL}/operators);
+                const operators = await response.json();
+                const select = document.getElementById("operator-select");
+                select.innerHTML = operators.map(op => <option value="${op.eID}">${op.name}</option>).join('');
+            } catch (error) {
+                console.error("Error fetching operators:", error);
+            }
+        }
 
+        async function updateCurrentOperator() {
+            const eID = document.getElementById("operator-select").value;
+            try {
+                await fetch(${API_URL}/current-operator, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ eID })
+                });
+                fetchCurrentOperator();
+            } catch (error) {
+                console.error("Error updating current operator:", error);
+            }
+        }
 
-fetchCurrentOperator();  // Load current operator on page load
+        async function authenticate() {
+            const passwordInput = document.getElementById("admin-password").value;
+            try {
+                const response = await fetch(${API_URL}/authenticate, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password: passwordInput })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById("admin-section").style.display = "block";
+                    fetchOperators();
+                } else {
+                    alert("Incorrect password!");
+                }
+            } catch (error) {
+                console.error("Error during authentication:", error);
+                alert("Authentication failed");
+            }
+        }
+
+        fetchCurrentOperator();  // Load current operator on page load
     </script>
 </body>
 </html>
