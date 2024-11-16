@@ -32,7 +32,7 @@
                 const response = await fetch(`${API_URL}/current-operator`);
                 const data = await response.json();
                 document.getElementById("operator-info").innerHTML = `
-                    <p><strong>Operator ID:</strong> ${data.eID}</p>
+                    <p><strong>UAS Operator Number (e-ID):</strong> ${data.eID}</p>
                     <p><strong>Drone Model:</strong> ${data.droneIdentification}</p>
                 `;
             } catch (error) {
