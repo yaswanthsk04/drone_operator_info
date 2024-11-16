@@ -29,12 +29,12 @@
 
         async function fetchCurrentOperator() {
             try {
-                const response = await fetch(${API_URL}/current-operator);
+                const response = await fetch(`${API_URL}/current-operator`);
                 const data = await response.json();
-                document.getElementById("operator-info").innerHTML = 
+                document.getElementById("operator-info").innerHTML = `
                     <p><strong>UAS Operator Number (e-ID):</strong> ${data.eID}</p>
                     <p><strong>Drone Model:</strong> ${data.droneIdentification}</p>
-                ;
+                `;
             } catch (error) {
                 document.getElementById("operator-info").innerHTML = "<p>Error loading operator data.</p>";
                 console.error("Error fetching operator data:", error);
@@ -43,10 +43,10 @@
 
         async function fetchOperators() {
             try {
-                const response = await fetch(${API_URL}/operators);
+                const response = await fetch(`${API_URL}/operators`);
                 const operators = await response.json();
                 const select = document.getElementById("operator-select");
-                select.innerHTML = operators.map(op => <option value="${op.eID}">${op.name}</option>).join('');
+                select.innerHTML = operators.map(op => `<option value="${op.eID}">${op.name}</option>`).join('');
             } catch (error) {
                 console.error("Error fetching operators:", error);
             }
@@ -55,7 +55,7 @@
         async function updateCurrentOperator() {
             const eID = document.getElementById("operator-select").value;
             try {
-                await fetch(${API_URL}/current-operator, {
+                await fetch(`${API_URL}/current-operator`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ eID })
@@ -69,7 +69,7 @@
         async function authenticate() {
             const passwordInput = document.getElementById("admin-password").value;
             try {
-                const response = await fetch(${API_URL}/authenticate, {
+                const response = await fetch(`${API_URL}/authenticate`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ password: passwordInput })
