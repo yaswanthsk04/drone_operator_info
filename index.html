@@ -113,20 +113,19 @@ async function updateCurrentOperator() {
     }
 }
 
-async function authenticate() {
-    const passwordInput = document.getElementById("admin-password").value;
-    try {
-        const response = await fetch(`${API_URL}/authenticate`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password: passwordInput })
-        });
-
-        const data = await response.json();
+function authenticate() {
+    const passwordInput = document.getElementById('admin-password').value;
+    fetch(`${API_URL}/authenticate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: passwordInput })
+    })
+    .then(response => response.json())
+    .then(data => {
         if (data.success) {
-            const adminSection = document.getElementById("admin-section");
+            const adminSection = document.getElementById('admin-section');
             if (adminSection) {
-                adminSection.style.display = "block";
+                adminSection.style.display = 'block';
                 fetchOperators();
             } else {
                 console.error('Admin section element not found.');
@@ -134,11 +133,13 @@ async function authenticate() {
         } else {
             alert("Incorrect password!");
         }
-    } catch (error) {
+    })
+    .catch(error => {
         console.error("Error during authentication:", error);
         alert("Authentication failed: " + error.message);
-    }
+    });
 }
+
 
 
 fetchCurrentOperator();  // Load current operator on page load
