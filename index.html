@@ -124,16 +124,22 @@ async function authenticate() {
 
         const data = await response.json();
         if (data.success) {
-            document.getElementById("admin-section").style.display = "block";
-            fetchOperators();
+            const adminSection = document.getElementById("admin-section");
+            if (adminSection) {
+                adminSection.style.display = "block";
+                fetchOperators();
+            } else {
+                console.error('Admin section element not found.');
+            }
         } else {
             alert("Incorrect password!");
         }
     } catch (error) {
         console.error("Error during authentication:", error);
-        alert("Authentication failed");
+        alert("Authentication failed: " + error.message);
     }
 }
+
 
 fetchCurrentOperator();  // Load current operator on page load
     </script>
