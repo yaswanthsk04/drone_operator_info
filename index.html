@@ -31,13 +31,10 @@
             try {
                 const response = await fetch(`${API_URL}/current-operator`);
                 const data = await response.json();
-                document.getElementById("operator-info").innerHTML = `
-                    <p><strong>eID:</strong> ${data.eID}</p>
-                    <p><strong>Name:</strong> ${data.name}</p>
-                    <p><strong>Contact:</strong> ${data.contact}</p>
-                    <p><strong>Country:</strong> ${data.registrationCountry}</p>
-                    <p><strong>Drone ID:</strong> ${data.droneIdentification}</p>
-                `;
+                document.getElementById("operator-info").innerHTML = 
+                    <p><strong>Operator ID:</strong> ${data.eID}</p>
+                    <p><strong>Drone Model:</strong> ${data.droneIdentification}</p>
+                ;
             } catch (error) {
                 document.getElementById("operator-info").innerHTML = "<p>Error loading operator data.</p>";
                 console.error("Error fetching operator data:", error);
