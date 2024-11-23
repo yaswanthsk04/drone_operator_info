@@ -5,35 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drone Operator Info</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #operator-info, #admin-section { margin-top: 20px; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        #operator-info p, #admin-section p {
+            font-size: 1rem;
+            color: #555;
+        }
+        #admin-section {
+            display: none;
+            margin-top: 20px;
+        }
+        select, input[type="password"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #27ae60;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2ecc71;
+        }
     </style>
 </head>
 <body>
-    <h1>Current Drone Operator</h1>
-    <div id="operator-info">
-        <p>Loading...</p>
-    </div>
+    <div class="container">
+        <h1>Current Drone Operator</h1>
+        <h8>(Please wait for a minute while the webpage loads)</h8>
+        <div id="operator-info">
+            <p>Loading...</p>
+        </div>
 
-    <div id="admin-section" style="display: none;">
-        <h2>Set Current Operator</h2>
-        <select id="operator-select"></select>
-        <button onclick="updateCurrentOperator()">Set as Current Operator</button>
-    </div>
+        <div id="admin-section">
+            <h2>Set Current Operator</h2>
+            <select id="operator-select"></select>
+            <button onclick="updateCurrentOperator()">Set as Current Operator</button>
+        </div>
 
-    <input type="password" id="admin-password" placeholder="Admin Password">
-    <button onclick="authenticate()">Login</button>
+        <input type="password" id="admin-password" placeholder="Admin Password">
+        <button onclick="authenticate()">Login</button>
+    </div>
 
     <script>
-        const API_URL = 'https://robust-unequaled-flute.glitch.me';  // Replace with your Glitch project URL
+        const API_URL = 'https://checkered-able-linseed.glitch.me';  // Replace with your Glitch project URL
 
         async function fetchCurrentOperator() {
             try {
                 const response = await fetch(`${API_URL}/current-operator`);
                 const data = await response.json();
                 document.getElementById("operator-info").innerHTML = `
+                    <p><strong>UAS Operator Name :</strong> ${data.name}</p>
                     <p><strong>UAS Operator Number (e-ID):</strong> ${data.eID}</p>
                     <p><strong>Drone Model:</strong> ${data.droneIdentification}</p>
+                    <p><strong>UAS Operator Contact :</strong> ${data.contact}</p>
                 `;
             } catch (error) {
                 document.getElementById("operator-info").innerHTML = "<p>Error loading operator data.</p>";
